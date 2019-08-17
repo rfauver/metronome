@@ -1,0 +1,58 @@
+<audio id="click" src="http://soundbible.com/mp3/Click2-Sebastian-759472264.mp3"></audio>
+<button id="button">Start</button>
+<div id="sliderContainer">
+  <input id="tempoSlider" type="range" min="40" max="200">
+</div>
+<div id="tempoDisplay"></div>
+
+<script>
+  let stopped = true;
+  let left = true;
+
+  function delayFromTempo() {
+    return (60/parseInt(tempoSlider.value)) * 1000
+  }
+
+  function playClick() {
+    if (stopped) { return; }
+    click.currentTime = 0;
+    click.play();
+    console.log('click')
+    const degrees = left ? 30 : -30
+    tempoSlider.style.transform = `rotate(${degrees}deg)`
+    left = !left;
+    setTimeout(playClick, delayFromTempo());
+  }
+
+  function onButtonClick() {
+    stopped = !stopped;
+    const label = stopped ? 'Start' : 'Stop';
+    button.innerText = label;
+    playClick();
+  }
+
+  function onTempoChange(event) {
+    tempoDisplay.innerText = event.currentTarget.value;
+    tempoSlider.style.transition = `transform ${delayFromTempo()}ms cubic-bezier(0.5,0,0.5,1)`;
+  }
+
+  button.addEventListener('click', onButtonClick);
+  tempoSlider.addEventListener('input', onTempoChange);
+  onTempoChange({ currentTarget: tempoSlider });
+</script>
+
+<style>
+  #sliderContainer {
+    width: 400px;
+    transform: rotate(90deg);
+    transform-origin: left;
+    position: absolute;
+    left: 300px;
+  }
+
+  #tempoSlider {
+    width: 100%;
+    transform-origin: right;
+    transform: rotate(-30deg);
+  }
+</style>
