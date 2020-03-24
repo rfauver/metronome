@@ -17,22 +17,29 @@
     return (60/parseInt(tempoSlider.value)) * 1000
   }
 
+  function swing() {
+    if (stopped) {
+      tempoSlider.style.transform = "rotate(0deg)";
+      return;
+    }
+    const degrees = left ? 30 : -30
+    tempoSlider.style.transform = `rotate(${degrees}deg)`;
+    left = !left;
+    const delay = delayFromTempo();
+    setTimeout(playClick, delay/2);
+    setTimeout(swing, delay);
+  }
+
   function playClick() {
-    if (stopped) { return; }
     click.currentTime = 0;
     click.play();
-    console.log('click')
-    const degrees = left ? 30 : -30
-    tempoSlider.style.transform = `rotate(${degrees}deg)`
-    left = !left;
-    setTimeout(playClick, delayFromTempo());
   }
 
   function onButtonClick() {
     stopped = !stopped;
     const label = stopped ? 'Start' : 'Stop';
     button.innerText = label;
-    playClick();
+    if(!stopped) { swing() };
   }
 
   function onTempoChange(event) {
@@ -60,11 +67,10 @@
   }
 
   #tempoSlider {
-    bottom: 187px;
+    bottom: 193px;
     left: 70px;
     position: absolute;
     transform-origin: right;
-    transform: rotate(-30deg);
     width: 100%;
   }
   #metronome {
