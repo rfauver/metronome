@@ -55,12 +55,19 @@
         stopped = !stopped;
         const label = stopped ? 'Start' : 'Stop';
         button.innerText = label;
-        if(!stopped) { swing() };
+        if (stopped) {
+          button.disabled = true;
+          setTimeout(enableButton, delayFromTempo() + 10);
+        } else { swing(); }
       }
 
       function onTempoChange(event) {
         tempoDisplay.innerText = event.currentTarget.value;
         tempoSlider.style.transition = `transform ${delayFromTempo()}ms cubic-bezier(0.5,0,0.5,1)`;
+      }
+
+      function enableButton() {
+        button.disabled = false;
       }
 
       button.addEventListener('click', onButtonClick);
